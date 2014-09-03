@@ -54,21 +54,42 @@
 </fieldset>
 <input type="submit" value="Find this!" />
 </form>
+<p><a href="http://Opencaching.com/">Opencaching.com</a> data licensed under the Creative Commons BY-SA 3.0 License</p>
 <h2>Instructions</h2>
 <p>Your pebble will show you the distance to the cache. Based on your choice above, the distance will be shown either in metric or imperial units.</p>
 <p>A black dot shows the heading to the cache. A white dot indicates your own heading, based on your own movement. If the dots touch each other, you are moving into the right direction.</p>
+<!-- Placeholders for OpenCaching.com information
+<h2>Privacy policy</h2>
+<p>Find Cahce will not store your location data.</p>
+<p>Your current location data is sent from this configuration page to <a href="http://Opencaching.com/">Opencaching.com</a> in order to retrieve a list of near-by geocache locations.</p>
+<h2>Terms of use</h2>
+<p>By using Opencaching.com information you agree to be bound by the <a href="http://www.opencaching.com/#terms">Opencaching.com Terms of Use</a>.</p>
+<p>Garmin is not responsible for the Content, including Geocaching Data, provided through the service.</p>
+<p>Garmin does not review or authenticate Geocaching Data for accuracy, relevance, lawfulness or safety.</p>
+<p>You use and rely on the Content and Geocaching Data at your own risk. You should verify the accuracy, safety, lawfulness and/or relevance of any Geocaching Data prior to relying on it for any purpose.</p>
+-->
 <script>
 function sendConfig(f) {
  var options = {lat: f.lat.value, lon: f.lon.value, units: f.units.value};
  location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
  return false;
 }
+<!-- Placeholders for OpenCaching.com API data
+var APIKEY = 'foobar';
 navigator.geolocation.getCurrentPosition(function(position) {
  var coords = position.coords;
  var f = document.getElementById('set');
  f.lat.value = coords.latitude;
  f.lon.value = coords.longitude;
+ var oc = 'http://www.opencaching.com/api/geocache?limit=20&center=' + coords.latitude + ',' + coords.longitude + '&limit=5&Authorization=' + APIKEY;
+ var client = new XMLHttpRequest();
+ client.onreadystatechange = function() {
+  
+ };
+ client.open("GET", oc);
+ client.send(); 
 });
+-->
 </script>
 </body>
 </html>
