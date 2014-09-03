@@ -87,7 +87,8 @@ for (var i=0;i<vars.length;i++) {
  }
 }
 function sendConfig(f) {
- var options = {lat: f.lat.value, lon: f.lon.value, units: f.units.value};
+ // var options = {lat: f.lat.value, lon: f.lon.value, units: f.units.value};
+ var options = {lat: f.lat.value, lon: f.lon.value};
  location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
  return false;
 }
