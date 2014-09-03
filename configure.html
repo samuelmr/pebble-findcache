@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="width" />
+<title>Configure</title>
+<style>
+ body {
+  font-family: 'Open Sans',Helvetica,Arial,sans-serif;
+  font-size: smaller;
+  margin: 0;
+  padding: 1em;
+ }
+ fieldset {
+  padding: 0.5em 1em 0 1em;
+ }
+ label {
+  font-weight: bold;
+ }
+ input[type="number"] {
+  display: block;
+  margin-bottom: 1em;
+ }
+ ul {
+  margin: 0;
+  padding: 0;
+ }
+ li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0 0 1em 0;
+ }
+</style>
+</head>
+<body>
+<header>
+<h1>Find Cache</h1>
+<p></p>
+</header>
+<form id="set" method="get" action="#" onsubmit="sendConfig(this); return false;">
+<fieldset>
+<legend>Cache location</legend>
+<label for="lat">Latitude</label><input id="lat" type="number" step="any" min="-90" max="90" />
+<label for="lon">Longitude</label><input id="lon" type="number" step="any" min="-180" max="180" />
+</fieldset>
+<fieldset>
+<legend>Distance units</legend>
+<ul>
+<li><input type="radio" name="units" id="metric" value="metric" /><label for="metric">Metric (meters, kilometers)</label></li>
+<li><input type="radio" name="units" id="imperial" value="imperial" /><label for="imperial">Imperial (yards, miles)</label></li>
+</fieldset>
+<input type="submit" value="Find this!" />
+</form>
+<h2>Instructions</h2>
+<p>Your pebble will show you the distance to the cache. Based on your choice above, the distance will be shown either in metric or imperial units.</p>
+<p>A black dot shows the heading to the cache. A white dot indicates your own heading, based on your own movement. If the dots touch each other, you are moving into the right direction.</p>
+<script>
+function sendConfig(f) {
+ var options = {lat: f.lat.value, lon: f.lon.value, units: f.units.value};
+ location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+ return false;
+}
+navigator.geolocation.getCurrentPosition(function(position) {
+ var coords = position.coords;
+ var f = document.getElementById('set');
+ f.lat.value = coords.latitude;
+ f.lon.value = coords.longitude;
+});
+</script>
+</body>
+</html>
