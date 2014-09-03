@@ -1,9 +1,3 @@
-/**
- * Welcome to Pebble.js!
- *
- * This is where you write your app.
- */
-
 var UI = require('ui');
 var Vector2 = require('vector2');
 var Settings = require('settings');
@@ -11,24 +5,23 @@ var innerR = 52;
 var outerR = 72;
 var centerX = 72;
 var centerY = 72;
-
-var myHeading = 105;
-var targetHeading = 185;
-var targetDistance = '500m';
-
+var R = 6371000;
+var units = 'metric';
+var targetLat;
+var targetLon;
+var myLat;
+var myLon;
+var myHeading;
 
 Settings.config(
   { url: 'https://rawgit.com/samuelmr/pebble-findcache/master/configure.html' },
   function(e) {
-    console.log('closed configurable');
-
-    // Show the parsed response
-    console.log(JSON.stringify(e.options));
-
-    // Show the raw response if parsing failed
-    if (e.failed) {
-      console.log(e.response);
+    if (e.options && e.options.lat) {
+      targetLat = e.options.lat;
+      targetLon = e.options.lon;
+      units = e.options.units;
     }
+    updateView();
   }
 );
 
@@ -81,70 +74,72 @@ var west = new UI.Text({
 main.add(west);
 
 var head = new UI.Text({
-  position: new Vector2(42, 52),
-  size: new Vector2(60, 20),
+  position: new Vector2(32, 50),
+  size: new Vector2(80, 20),
   font: 'gothic-24-bold',
-  text: targetHeading,
-  color: 'black',
+  text: '',
+  color: 'white',
   textAlign: 'center'
 });
 main.add(head);
 
 var dist = new UI.Text({
-  position: new Vector2(42, 52),
-  size: new Vector2(60, 20),
+  position: new Vector2(32, 70),
+  size: new Vector2(80, 20),
   font: 'gothic-24-bold',
-  text: targetDistance,
-  color: 'black',
+  text: '',
+  color: 'white',
   textAlign: 'center'
 });
 main.add(dist);
 
-var targetX = centerX + (innerR + (outerR - innerR)/2) * Math.sin((180 - targetHeading) * Math.PI / 180);
-var targetY = centerY + (innerR + (outerR - innerR)/2) * Math.cos((180 - targetHeading) * Math.PI / 180);
-// console.log(targetX + ' = (' + innerR + ' + ( ' + outerR + ' - ' + innerR + ')/2) * Math.sin(' + targetHeading * Math.PI / 180 + ')');
-var myX = centerX + (innerR - (outerR - innerR)/2) * Math.sin((180 - myHeading) * Math.PI / 180);
-var myY = centerY + (innerR - (outerR - innerR)/2) * Math.cos((180 - myHeading) * Math.PI / 180);
-
-console.log(myX + ',' + myY + ' => ' + targetX + ',' + targetY);
-
-var target = new UI.Circle({ position: new Vector2(targetX, targetY), backgroundColor: 'black', radius: 8 });
-main.add(target);
-
-var me = new UI.Circle({ position: new Vector2(myX, myY), radius: 8 });
+var me = new UI.Circle({ radius: 8, position: new Vector2(72, 72) });
 main.add(me);
+
+var target = new UI.Circle({ backgroundColor: 'black', radius: 8, position: new Vector2(72, 72) });
+main.add(target);
 
 main.show();
 
-main.on('click', 'up', function(e) {
-  var menu = new UI.Menu({
-    sections: [{
-      items: [{
-        title: 'Pebble.js',
-        icon: 'images/menu_icon.png',
-        subtitle: 'Can do Menus'
-      }, {
-        title: 'Second Item',
-        subtitle: 'Subtitle Text'
-      }]
-    }]
-  });
-  menu.on('select', function(e) {
-    console.log('Selected item #' + e.itemIndex + ' of section #' + e.sectionIndex);
-    console.log('The item is titled "' + e.item.title + '"');
-  });
-  menu.show();
-});
+navigator.geolocation.watchPosition(
+  function(position) {
+    myLat = position.coords.latitude;
+    myLon = position.coords.longitude;
+    myHeading = position.coords.heading;
+    updateView();
+  },
+  function(error) {
+    head.text = 'location';
+    dist.text = 'error';
+  },
+  {enableHighAccuracy: true}
+);
 
-main.on('click', 'select', function(e) {
-  var wind = new UI.Window();
-  wind.show();
-});
-
-main.on('click', 'down', function(e) {
-  var card = new UI.Card();
-  card.title('A Card');
-  card.subtitle('Is a Window');
-  card.body('The simplest window type in Pebble.js.');
-  card.show();
-});
+function updateView() {
+  if (targetLat || targetLon) {
+    var dLat = (myLat-targetLat) * Math.PI / 180;
+    var dLon = (myLon-targetLon) * Math.PI / 180;
+    var l1 = targetLat * Math.PI / 180;
+    var l2 = myLat * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(l1) * Math.cos(l2); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    dist.text(Math.round(R * c) + ' m');
+    var y = Math.sin(dLon) * Math.cos(l2);
+    var x = Math.cos(l1)*Math.sin(l2) -
+            Math.sin(l1)*Math.cos(l2)*Math.cos(dLon);
+    var targetHeading = Math.round(Math.atan2(y, x) * 180 / Math.PI);
+    head.text(targetHeading + '°');
+    var targetX = centerX + (innerR + (outerR - innerR)/2) * Math.sin((180 - targetHeading) * Math.PI / 180);
+    var targetY = centerY + (innerR + (outerR - innerR)/2) * Math.cos((180 - targetHeading) * Math.PI / 180);
+    target.animate('position', new Vector2(targetX, targetY));
+    var myX = -20;
+    var myY = -20;
+    if (myHeading !== null) {
+      myX = centerX + (innerR - (outerR - innerR)/2) * Math.sin((180 - myHeading) * Math.PI / 180);
+      myY = centerY + (innerR - (outerR - innerR)/2) * Math.cos((180 - myHeading) * Math.PI / 180);  
+    }
+    me.animate('position', new Vector2(myX, myY));
+    // console.log('dist is ' + dist.text() + ' and head is ' + head.text() + '; my heading is ' + myHeading);
+  }
+}
