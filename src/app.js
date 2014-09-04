@@ -117,10 +117,10 @@ navigator.geolocation.watchPosition(
 
 function updateView() {
   if (targetLat || targetLon) {
-    var dLat = (myLat-targetLat) * Math.PI / 180;
-    var dLon = (myLon-targetLon) * Math.PI / 180;
-    var l1 = targetLat * Math.PI / 180;
-    var l2 = myLat * Math.PI / 180;
+    var dLat = (targetLat-myLat) * Math.PI / 180;
+    var dLon = (targetLon-myLon) * Math.PI / 180;
+    var l1 = myLat * Math.PI / 180;
+    var l2 = targetLat * Math.PI / 180;
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
             Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(l1) * Math.cos(l2); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
@@ -129,6 +129,7 @@ function updateView() {
     var x = Math.cos(l1)*Math.sin(l2) -
             Math.sin(l1)*Math.cos(l2)*Math.cos(dLon);
     var targetHeading = Math.round(Math.atan2(y, x) * 180 / Math.PI);
+    targetHeading = targetHeading < 0 ? 360 + targetHeading : targetHeading;
     head.text(targetHeading + '°');
     var targetX = centerX + (innerR + (outerR - innerR)/2) * Math.sin((180 - targetHeading) * Math.PI / 180);
     var targetY = centerY + (innerR + (outerR - innerR)/2) * Math.cos((180 - targetHeading) * Math.PI / 180);
@@ -139,6 +140,7 @@ function updateView() {
       myX = centerX + (innerR - (outerR - innerR)/2) * Math.sin((180 - myHeading) * Math.PI / 180);
       myY = centerY + (innerR - (outerR - innerR)/2) * Math.cos((180 - myHeading) * Math.PI / 180);  
     }
+    myHeading = myHeading < 0 ? 360 + myHeading : myHeading;
     me.animate('position', new Vector2(myX, myY));
     // console.log('dist is ' + dist.text() + ' and head is ' + head.text() + '; my heading is ' + myHeading);
   }
