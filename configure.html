@@ -121,7 +121,6 @@ function sendConfig(f) {
   locs.push([ips[0].value, ips[1].value]);
  }
  options.locations = locs;
- alert('pebblejs://close#' + encodeURIComponent(JSON.stringify(options)));
  location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
  return false;
 }
