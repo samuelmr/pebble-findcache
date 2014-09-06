@@ -128,8 +128,8 @@ function sendConfig(f) {
   locs.push([ips[0].value, ips[1].value]);
  }
  options.locations = locs;
- // location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
- location = 'configure.html#' + encodeURIComponent(JSON.stringify(options));
+ location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+ // location = 'configure.html#' + encodeURIComponent(JSON.stringify(options));
  return false;
 }
 function clone(button) {
