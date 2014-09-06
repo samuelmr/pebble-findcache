@@ -125,7 +125,9 @@ function sendConfig(f) {
  var locs = [];
  for (var i=0; i<lis.length; i++) {
   var ips = lis[i].getElementsByTagName('input');
-  locs.push([ips[0].value, ips[1].value]);
+  if([ips[0].value && ips[1].value])) {
+   locs.push([ips[0].value, ips[1].value]);
+  }
  }
  options.locations = locs;
  location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
