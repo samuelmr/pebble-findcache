@@ -71,7 +71,6 @@
 <label for="lon">Longitude</label><input id="lon" type="number" step="any" min="-180" max="180" />
 -->
 </fieldset>
-<!--
 <fieldset>
 <legend>Distance units</legend>
 <ul>
@@ -79,8 +78,7 @@
 <li><input type="radio" name="units" id="imperial" value="imperial" /><label for="imperial">Imperial (yards, miles)</label></li>
 </ul>
 </fieldset>
--->
-<input type="submit" value="Find this!" />
+<input type="submit" value="Send to watch" />
 </form>
 <!--
 <p><a href="http://Opencaching.com/">Opencaching.com</a> data licensed under the Creative Commons BY-SA 3.0 License</p>
@@ -112,8 +110,7 @@ for (var i=0;i<vars.length;i++) {
  }
 }
 function sendConfig(f) {
- // var options = {units: f.units.value};
- var options = {};
+ var options = {units: f.units.value};
  var lis = document.getElementById('locations').getElementsByTagName('li');
  var locs = [];
  for (var i=0; i<lis.length; i++) {
