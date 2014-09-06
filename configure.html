@@ -84,11 +84,11 @@
 <p><a href="http://Opencaching.com/">Opencaching.com</a> data licensed under the Creative Commons BY-SA 3.0 License</p>
 -->
 <h2>Instructions</h2>
-<p>Your pebble will show you the distance to the cache. <!-- Based on your choice above, the distance will be shown either in metric or imperial units. --></p>
+<p>Your pebble will show you the distance to the cache. Based on your choice above, the distance will be shown either in metric or imperial units.</p>
 <p>A black dot shows the heading to the cache. A white dot indicates your own heading, based on your own movement. If the dots touch each other, you are moving into the right direction.</p>
-<!-- Placeholders for OpenCaching.com information
 <h2>Privacy policy</h2>
 <p>Find Cahce will not store your location data.</p>
+<!-- Placeholders for OpenCaching.com information
 <p>Your current location data is sent from this configuration page to <a href="http://Opencaching.com/">Opencaching.com</a> in order to retrieve a list of near-by geocache locations.</p>
 <h2>Terms of use</h2>
 <p>By using Opencaching.com information you agree to be bound by the <a href="http://www.opencaching.com/#terms">Opencaching.com Terms of Use</a>.</p>
@@ -100,14 +100,24 @@
 /* Placeholders for OpenCaching.com API data
 var APIKEY = 'foobar';
 */
-var query = window.location.search.substring(1);
-var vars = query.split("&");
-for (var i=0;i<vars.length;i++) {
- var pair = vars[i].split("=");
- if ((pair[0] == 'units') && (pair[1] == 'imperial')) {
-  document.getElementById('imperial').checked = true;
-  document.getElementById('metric').checked = false;
+if (window.location.hash) {
+ var conf = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+ if (conf && conf.units) {
+  var metric = document.getElementById('metric');
+  var imperial = document.getElementById('imperial');
+  metric.checked = (conf.units == 'metric');
+  imperial.checked = (conf.units == 'imperial');
  }
+ if (conf && conf.locations && conf.locations.length) {
+  var lis = document.getElementsByTagName('li');
+  for (var i=conf.locations.length-1; i>=0; i--) {
+   var copy = lis[0].cloneNode(true);
+   var ips = copy.getElementsByTagName('input');
+   ips[0].value = conf.locations[i][0];
+   ips[1].value = conf.locations[i][1];
+   lis[0].parentNode.insertBefore(copy, lis[0]);
+  }
+ } 
 }
 function sendConfig(f) {
  var options = {units: f.units.value};
@@ -118,7 +128,8 @@ function sendConfig(f) {
   locs.push([ips[0].value, ips[1].value]);
  }
  options.locations = locs;
- location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+ // location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+ location = 'configure.html#' + encodeURIComponent(JSON.stringify(options));
  return false;
 }
 function clone(button) {
@@ -130,14 +141,14 @@ function clone(button) {
  var ips = parent.getElementsByTagName('input');
  ips[0].value = ips[1].value = '';
  parent.parentNode.insertBefore(copy, parent);
- return false;
+ return copy;
 }
 function destroy(button) {
  var parent = button.parentNode;
  if (!parent) {
   return false;
  }
- var lis = parent.parentNode.childNodes;
+ var lis = parent.parentNode.getElementsByTagName('li');
  if (lis.length > 1) {
   parent.parentNode.removeChild(parent);
  }
@@ -145,8 +156,9 @@ function destroy(button) {
 }
 navigator.geolocation.getCurrentPosition(function(position) {
  var coords = position.coords;
- var f = document.getElementById('set');
- f.getElementsByTagName('input')[1].value = coords.latitude + ',' + coords.longitude;
+ var lis = parent.parentNode.getElementsByTagName('li');
+ var last = lis[lis.length];
+ last.getElementsByTagName('input')[1].value = coords.latitude + ',' + coords.longitude;
  /*
  var oc = 'http://www.opencaching.com/api/geocache?limit=20&center=' + coords.latitude + ',' + coords.longitude + '&limit=5&Authorization=' + APIKEY;
  var client = new XMLHttpRequest();
