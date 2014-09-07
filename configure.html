@@ -161,7 +161,7 @@ function destroy(button) {
 }
 navigator.geolocation.getCurrentPosition(function(position) {
  var coords = position.coords;
- var lis = document.getElementsByTagName('li');
+ var lis = document.getElementById('locations').getElementsByTagName('li');
  var last = lis[lis.length-1];
  last.getElementsByTagName('input')[1].value = coords.latitude + ',' + coords.longitude;
  /*
