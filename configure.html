@@ -162,7 +162,7 @@ function destroy(button) {
 navigator.geolocation.getCurrentPosition(function(position) {
  var coords = position.coords;
  var lis = document.getElementsByTagName('li');
- var last = lis[lis.length];
+ var last = lis[lis.length-1];
  last.getElementsByTagName('input')[1].value = coords.latitude + ',' + coords.longitude;
  /*
  var oc = 'http://www.opencaching.com/api/geocache?limit=20&center=' + coords.latitude + ',' + coords.longitude + '&limit=5&Authorization=' + APIKEY;
