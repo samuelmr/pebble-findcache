@@ -111,16 +111,19 @@ if (window.location.hash) {
  if (conf && conf.locations && conf.locations.length) {
   var lis = document.getElementsByTagName('li');
   for (var i=conf.locations.length-1; i>=0; i--) {
-   var copy = lis[0].cloneNode(true);
-   var ips = copy.getElementsByTagName('input');
-   ips[0].value = conf.locations[i][0];
-   ips[1].value = conf.locations[i][1];
-   lis[0].parentNode.insertBefore(copy, lis[0]);
+   if (conf.locations[i][0] && conf.locations[i][1]) {
+    var copy = lis[0].cloneNode(true);
+    var ips = copy.getElementsByTagName('input');
+    ips[0].value = conf.locations[i][0];
+    ips[1].value = conf.locations[i][1];
+    lis[0].parentNode.insertBefore(copy, lis[0]);
+   }
   }
  } 
 }
 function sendConfig(f) {
- var options = {units: f.units.value};
+ var u = document.getElementById('imperial').checked ? 'imperial' : 'metric';
+ var options = {units: u};
  var lis = document.getElementById('locations').getElementsByTagName('li');
  var locs = [];
  for (var i=0; i<lis.length; i++) {
@@ -158,7 +161,7 @@ function destroy(button) {
 }
 navigator.geolocation.getCurrentPosition(function(position) {
  var coords = position.coords;
- var lis = parent.parentNode.getElementsByTagName('li');
+ var lis = document.getElementsByTagName('li');
  var last = lis[lis.length];
  last.getElementsByTagName('input')[1].value = coords.latitude + ',' + coords.longitude;
  /*
