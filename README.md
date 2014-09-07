@@ -1,7 +1,7 @@
 pebble-findcache
 ================
 
-Geocaching for Pebble
+Geocaching with Pebble
 
 <a href="http://pblweb.com/appstore/540ca9ef1120350bc20001e0" title="Find Cache on the Pebble appstore">
   <img src="http://pblweb.com/badge/540ca9ef1120350bc20001e0/black/large/" />
