@@ -10,7 +10,7 @@ var R = 6378137;
 var YARD_LENGTH = 0.9144;
 var YARDS_IN_MILE = 1760;
 // var divider = 100000;
-var units = 'metric';
+var units = Settings.option('units') || 'metric';
 var targetLoc;
 var myLat;
 var myLon;
@@ -75,6 +75,24 @@ var west = new UI.Text({
 });
 main.add(west);
 
+var month = new UI.TimeText({
+  position: new Vector2(4, 132),
+  size: new Vector2(30, 12),
+  font: 'gothic-14',
+  text: '%b',
+  textAlign: 'left'
+});
+main.add(month);
+
+var day = new UI.TimeText({
+  position: new Vector2(110, 132),
+  size: new Vector2(30, 12),
+  font: 'gothic-14',
+  text: '%d',
+  textAlign: 'right'
+});
+main.add(day);
+
 var me = new UI.Circle({ radius: 8, position: new Vector2(72, 72) });
 main.add(me);
 
@@ -121,8 +139,6 @@ menu.on('select', function(e) {
   main.show();
   watcher = navigator.geolocation.watchPosition(
     function(position) {
-      console.log('Heading to ' + position.coords.heading);
-      // add rounding of current coordinates
       myHeading = position.coords.heading;
       myLat = position.coords.latitude;
       myLon = position.coords.longitude;
@@ -152,7 +168,6 @@ function updateView() {
     var loc = targetLoc.split(',');
     var targetLat = loc[0];
     var targetLon = loc[1];
-    console.log('Showing view to ' + targetLat + ',' + targetLon);
     var dLat = (targetLat-myLat) * Math.PI / 180;
     var dLon = (targetLon-myLon) * Math.PI / 180;
     var l1 = myLat * Math.PI / 180;
@@ -162,14 +177,16 @@ function updateView() {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = Math.round(R * c);
     if (units == 'imperial') {
-      d = d / YARD_LENGTH;
+      d = Math.round(d / YARD_LENGTH);
     }
     var u = (units != 'imperial') ? 'm' : 'yd';
-    console.log('units: ' + u);
     if (d > 5000) {
       var divider = (units != 'imperial') ? 1000 : YARDS_IN_MILE;
       d = Math.round(100 * d / divider)/100;
       u = (units != 'imperial') ? 'km' : 'mi';
+      if (d > 10) {
+        d = Math.round(d);
+      }
     }
     var newdist = d + ' ' + u;
     var y = Math.sin(dLon) * Math.cos(l2);
@@ -184,20 +201,19 @@ function updateView() {
     var myY = -20;
     if (myHeading !== null) {
       myX = centerX + (innerR - (outerR - innerR)/2) * Math.sin((180 - myHeading) * Math.PI / 180);
-      myY = centerY + (innerR - (outerR - innerR)/2) * Math.cos((180 - myHeading) * Math.PI / 180);  
+      myY = centerY + (innerR - (outerR - innerR)/2) * Math.cos((180 - myHeading) * Math.PI / 180);
     }
     myHeading = myHeading < 0 ? 360 + myHeading : myHeading;
     if ((newdist != dist.text()) ||
-        (newhead != head.text()) || 
+        (newhead != head.text()) ||
         (me.position().x != myX) ||
-        (me.position().y != myY) || 
+        (me.position().y != myY) ||
         (target.position().x != targetX) ||
         (target.position().y != targetY))  {
-      console.log('update screen');
       dist.text(newdist);
       head.text(newhead);
       target.animate('position', new Vector2(targetX, targetY));
-      me.animate('position', new Vector2(myX, myY));    
+      me.animate('position', new Vector2(myX, myY));
     } 
     // console.log('dist is ' + dist.text() + ' and head is ' + head.text() + '; my heading is ' + myHeading);
   }

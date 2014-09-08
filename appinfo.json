@@ -11,7 +11,6 @@
         "media": [
             {
                 "file": "images/menu_icon.png",
-                "menuIcon": true,
                 "name": "IMAGE_MENU_ICON",
                 "type": "png"
             },
@@ -29,13 +28,19 @@
                 "file": "fonts/UbuntuMono-Regular.ttf",
                 "name": "MONO_FONT_14",
                 "type": "font"
+            },
+            {
+                "file": "images/28x28.png",
+                "menuIcon": true,
+                "name": "IMAGES_28X28_PNG",
+                "type": "png"
             }
         ]
     },
     "shortName": "Find Cache",
     "uuid": "1ace2270-d593-408f-a569-bd98481590ca",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": false
     }
