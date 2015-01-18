@@ -1,5 +1,5 @@
-pebble-findcache
-================
+Find Cache
+==========
 
 Geocaching with Pebble
 
