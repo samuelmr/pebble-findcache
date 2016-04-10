@@ -61,8 +61,8 @@
 <legend>Cache locations</legend>
 <ul>
 <li>
-<label>Name <input type="text" name="name" size="20" /></label> 
-<label>Location (latitude,longitude) <input type="text" name="location" size="25" pattern="\-?\d{1,2}\.?\d*\,\-?\d{1,3}\.?\d*" /></label>
+<label>Name <input type="text" name="name" size="20" /></label>
+<label>Location (latitude,longitude) <input type="text" name="location" size="25" pattern="\-?\d{1,2}\.?\d*\,\s*\-?\d{1,3}\.?\d*" /></label>
 <button type="button" onclick="clone(this);" title="Add new" class="clone">+</button> <button type="button" onclick="destroy(this);" title="Remove" class="destroy">&minus;</button>
 </li>
 </ul>
@@ -121,7 +121,7 @@ if (window.location.hash) {
     lis[0].parentNode.insertBefore(copy, lis[0]);
    }
   }
- } 
+ }
 }
 function sendConfig(f) {
  var u = document.getElementById('imperial').checked ? 'imperial' : 'metric';
@@ -170,10 +170,10 @@ navigator.geolocation.getCurrentPosition(function(position) {
  var oc = 'http://www.opencaching.com/api/geocache?limit=20&center=' + coords.latitude + ',' + coords.longitude + '&limit=5&Authorization=' + APIKEY;
  var client = new XMLHttpRequest();
  client.onreadystatechange = function() {
-  
+
  };
  client.open("GET", oc);
- client.send(); 
+ client.send();
  */
 });
 </script>
