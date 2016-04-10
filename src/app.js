@@ -166,8 +166,8 @@ function buildMenu(locations) {
 function updateView() {
   if (targetLoc) {
     var loc = targetLoc.split(',');
-    var targetLat = loc[0];
-    var targetLon = loc[1];
+    var targetLat = parseFloat(loc[0].replace(/[^\d.-]*/g, ''));
+    var targetLon = parseFloat(loc[1].replace(/[^\d.-]*/g, ''));
     var dLat = (targetLat-myLat) * Math.PI / 180;
     var dLon = (targetLon-myLon) * Math.PI / 180;
     var l1 = myLat * Math.PI / 180;
