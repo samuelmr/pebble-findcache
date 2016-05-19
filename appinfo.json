@@ -41,11 +41,12 @@
     "shortName": "Find Cache",
     "targetPlatforms": [
         "aplite",
-        "basalt"
+        "basalt",
+        "chalk"
     ],
     "uuid": "1ace2270-d593-408f-a569-bd98481590ca",
     "versionCode": 1,
-    "versionLabel": "1.1",
+    "versionLabel": "1.4",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false

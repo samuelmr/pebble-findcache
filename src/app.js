@@ -1,10 +1,17 @@
 var UI = require('ui');
 var Vector2 = require('vector2');
 var Settings = require('settings');
-var innerR = 52;
-var outerR = 72;
-var centerX = 72;
-var centerY = 72;
+var Feature = require('platform/feature');
+var res = Feature.resolution();
+var width = res.x;
+var height = res.y;
+var screenR = width > height ? height/2 : width/2;
+
+var innerR = screenR - 20;
+var outerR = screenR;
+var centerX = screenR;
+var centerY = screenR;
+
 // var R = 6371000;
 var R = 6378137;
 var YARD_LENGTH = 0.9144;
@@ -36,7 +43,7 @@ var inner = new UI.Circle({ position: new Vector2(centerX, centerY), backgroundC
 main.add(inner);
 
 var north = new UI.Text({
-  position: new Vector2(62, -5),
+  position: new Vector2(centerX-10, centerY-innerR-26),
   size: new Vector2(20, 20),
   font: 'gothic-24-bold',
   text: 'N',
@@ -46,7 +53,7 @@ var north = new UI.Text({
 main.add(north);
 
 var east = new UI.Text({
-  position: new Vector2(122, 57),
+  position: new Vector2(centerX+innerR, centerY-10),
   size: new Vector2(20, 20),
   font: 'gothic-24-bold',
   text: 'E',
@@ -56,7 +63,7 @@ var east = new UI.Text({
 main.add(east);
 
 var south = new UI.Text({
-  position: new Vector2(62, 119),
+  position: new Vector2(centerX-10, centerY+innerR-8),
   size: new Vector2(20, 20),
   font: 'gothic-24-bold',
   text: 'S',
@@ -66,7 +73,7 @@ var south = new UI.Text({
 main.add(south);
 
 var west = new UI.Text({
-  position: new Vector2(0, 57),
+  position: new Vector2(0, centerY-10),
   size: new Vector2(20, 20),
   font: 'gothic-24-bold',
   text: 'W',
@@ -76,7 +83,7 @@ var west = new UI.Text({
 main.add(west);
 
 var month = new UI.TimeText({
-  position: new Vector2(4, 132),
+  position: new Vector2(4, height-12),
   size: new Vector2(30, 12),
   font: 'gothic-14',
   text: '%b',
@@ -85,7 +92,7 @@ var month = new UI.TimeText({
 main.add(month);
 
 var day = new UI.TimeText({
-  position: new Vector2(110, 132),
+  position: new Vector2(width-34, height-12),
   size: new Vector2(30, 12),
   font: 'gothic-14',
   text: '%d',
@@ -93,14 +100,14 @@ var day = new UI.TimeText({
 });
 main.add(day);
 
-var me = new UI.Circle({ radius: 8, position: new Vector2(72, 72) });
+var me = new UI.Circle({ radius: 8, position: new Vector2(centerX, centerY) });
 main.add(me);
 
-var target = new UI.Circle({ backgroundColor: 'black', radius: 8, position: new Vector2(72, 72) });
+var target = new UI.Circle({ backgroundColor: 'black', radius: 8, position: new Vector2(centerX, centerY) });
 main.add(target);
 
 var head = new UI.Text({
-  position: new Vector2(32, 50),
+  position: new Vector2((width-80)/2, height/2-30),
   size: new Vector2(80, 20),
   font: 'gothic-24-bold',
   text: '',
@@ -110,7 +117,7 @@ var head = new UI.Text({
 main.add(head);
 
 var dist = new UI.Text({
-  position: new Vector2(32, 70),
+  position: new Vector2((width-80)/2, height/2),
   size: new Vector2(80, 20),
   font: 'gothic-24-bold',
   text: '',
@@ -151,6 +158,15 @@ menu.on('select', function(e) {
     {enableHighAccuracy: true}
   );
 });
+
+/*
+// debug:
+var locations = [
+  ['Test location','64.123,25.123'],
+  ['Another location', '64.12345,25.12345']
+];
+buildMenu(locations);
+*/
 
 function buildMenu(locations) {
   var locs = [];
