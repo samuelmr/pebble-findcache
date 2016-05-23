@@ -135,9 +135,21 @@ function sendConfig(f) {
   }
  }
  options.locations = locs;
- location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+ // location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
  // location = 'configure.html#' + encodeURIComponent(JSON.stringify(options));
- return false;
+ var return_to = getQueryParam('return_to', 'pebblejs://close#');
+ document.location = return_to + encodeURIComponent(JSON.stringify(options));
+ // return false;
+}
+function getQueryParam(variable, default_) {
+    var query = location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (pair[0] == variable)
+            return decodeURIComponent(pair[1]);
+    }
+    return default_ || false;
 }
 function clone(button) {
  var parent = button.parentNode;
